@@ -1,0 +1,66 @@
+Block
+	identifier 			PK string
+	name 				string
+	render_image		url
+	inventory_image		url
+	version 			FK Version
+	renewable 			bool
+	stack_size 			int (1 if "no stackable")
+	tool 				M2M Tool
+	blast_resistance	float
+	hardness			float
+	luminous			bool
+	transparent			FK Transparency
+	flammable 			bool
+	waterloggable		bool (can be None for full blocks)
+	
+Item
+	identifier			PK string
+	name				string
+	inventory_image		url
+	version 			FK Version
+	rarity				FK Rarity 
+	renewable			bool
+	stack_size			int (1 if "no stackable")
+	
+Mob
+	identifier			PK string
+	name				string
+	head_image			url
+	render_image		url
+	behavior			M2M Behavior
+	classification		M2M Classification
+	width				float
+	height				float
+	health				int
+	drops				reverse Drop
+	
+
+Version
+	update				string
+	version				PK string
+	release_date		date optional
+	blocks				reverse Block
+	items				reverse Item
+	mobs				reverse Mob
+	
+Drop
+	mob					FK Mob
+	item				FK Item
+	chance				float
+	quantity			int (no looting)
+
+Tool
+	name				string (Sword, Axe, Pickaxe, Hoe, Shovel, Shears, ..., Any, None)
+	
+Transparency
+	name				string (yes, no, partial)
+	
+Rarity
+	name				string (Common, Uncommon, Rare, Epic, Legendary, ...)
+	
+Behavior
+	name				string (Passive, Neutral, Hostile, ...)
+	
+Classification
+	name				string (Animal, Aquatic, Ambient, ...)
