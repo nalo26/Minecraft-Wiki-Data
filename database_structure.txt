@@ -28,12 +28,14 @@ Mob
 	name				string
 	head_image			url
 	render_image		url
+	version				FK Version
 	behavior			M2M Behavior
 	classification		M2M Classification
 	width				float
 	height				float
-	health				int
+	health				float
 	drops				reverse Drop
+	attack              M2O Attack
 	
 
 Version

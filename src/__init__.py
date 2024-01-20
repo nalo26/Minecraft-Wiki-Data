@@ -35,3 +35,11 @@ def create_app():
     app.register_blueprint(api_blueprint)
 
     return app
+
+
+def init_db():
+    from .database import create_database
+
+    app = create_app()
+    with app.app_context():
+        create_database(db)
