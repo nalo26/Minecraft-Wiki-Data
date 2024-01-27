@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, DateTime, Float, Integer, String
+from sqlalchemy import Boolean, Date, DateTime, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 from .. import db
@@ -61,8 +61,8 @@ class Version(db.Model):
     __tablename__ = "version"
 
     update = db.Column(String(100))
-    version = db.Column(String(10), primary_key=True)
-    release_date = db.Column(DateTime, nullable=False)
+    version = db.Column(String(50), primary_key=True)
+    release_date = db.Column(Date)
     blocks = db.relationship("Block", back_populates="version")
     items = db.relationship("Item", back_populates="version")
     mobs = db.relationship("Mob", back_populates="version")
