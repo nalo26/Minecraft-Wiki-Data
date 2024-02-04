@@ -17,7 +17,7 @@ class Block(db.Model):
     tools = db.relationship("Tool", secondary="block_tool", back_populates="blocks")
     blast_resistance = db.Column(Float, nullable=False)
     hardness = db.Column(Float, nullable=False)
-    luminous = db.Column(Boolean, nullable=False)
+    luminous = db.Column(Integer, nullable=False)
     transparency_id = db.Column(String(100), db.ForeignKey("transparency.name"))
     transparency = db.relationship("Transparency", back_populates="blocks")
     flammable = db.Column(Boolean, nullable=False)

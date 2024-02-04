@@ -1,23 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 
-from .models import Behavior, Classification, Rarity, Tool, Transparency
+from .models import Behavior, Classification, Rarity, Transparency
 
 
 def create_database(db: SQLAlchemy):
     db.drop_all()
     db.create_all()
-
-    db.session.add_all(
-        [
-            Tool(name="Pickaxe"),
-            Tool(name="Axe"),
-            Tool(name="Shovel"),
-            Tool(name="Hoe"),
-            Tool(name="Sword"),
-            Tool(name="Shears"),
-            Tool(name="Any"),
-        ]
-    )
 
     db.session.add_all(
         [

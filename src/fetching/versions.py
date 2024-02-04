@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from src.database.models import Version
 
-from .regex import CLEAN_UPDATE_RE, CLEAN_VERSION_RE, DOUBLE_DATE_RE, DOUBLE_DAY_RE, INDEV_RE, INFDEV_RE
+from .regex import CLEAN_UPDATE_RE, DOUBLE_DATE_RE, DOUBLE_DAY_RE, INDEV_RE, INFDEV_RE, REMOVE_PARENTHESES_RE
 
 
 def flatten_table(soup: BeautifulSoup, table: Tag) -> list[list[str]]:
@@ -135,8 +135,8 @@ def parse_preclassic(soup: BeautifulSoup, table: Tag):
         yield update, version, release
 
 
-def fetch_versions(BASE_URI, db: SQLAlchemy):
-    URL = BASE_URI % "Java_Edition_version_history"
+def fetch_versions(BASE_URI: str, db: SQLAlchemy):
+    URL = BASE_URI % "w/Java_Edition_version_history"
     response = rq.get(URL)
     soup = BeautifulSoup(response.text, "html.parser")
     h2: ResultSet[Tag] = soup.find_all("h2")
@@ -167,7 +167,7 @@ def fetch_versions(BASE_URI, db: SQLAlchemy):
 
             for update, version, release in parsing_method(soup, table):
                 update = CLEAN_UPDATE_RE.sub("", update).strip()
-                version = CLEAN_VERSION_RE.sub("", version).strip()
+                version = REMOVE_PARENTHESES_RE.sub("", version).strip()
                 print(update, "/", version, "/", release)
                 if Version.query.get(version) is None:
                     db.session.add(Version(version=version, release_date=release, update=update))
