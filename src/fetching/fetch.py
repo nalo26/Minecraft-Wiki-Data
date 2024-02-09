@@ -1,4 +1,5 @@
 from .blocks import fetch_blocks
+from .items import fetch_items
 from .versions import fetch_versions
 
 # BASE_URI = "https://minecraft.wiki/%s"
@@ -11,6 +12,7 @@ def fetch():
     app = create_app()
     with app.app_context():
         fetch_versions(BASE_URI, db)
+        fetch_items(BASE_URI, db)
         fetch_blocks(BASE_URI, db)
 
 

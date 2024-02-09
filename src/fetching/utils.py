@@ -40,3 +40,24 @@ def get_info_table(soup: BeautifulSoup) -> tuple[dict, Tag]:
     return info_table, tool_list
 
 
+def get_inventory_image(soup: BeautifulSoup, name: str) -> str:
+    search_name = name.replace("(", "").replace(")", "")
+
+    if "Banner Pattern" in search_name:
+        search_name = "Banner Pattern"
+
+    if search_name.endswith("Spawn Egg"):
+        table: Tag = soup.select("h2:has(> #List_of_spawn_eggs)")[0].find_next("table")
+        invslots: ResultSet[Tag] = table.select(".sprite-file:has(> img.pixel-image)")
+    else:
+        invslots: ResultSet[Tag] = soup.select(".infobox-invimages .invslot-item")
+
+    if len(invslots) == 1:
+        return invslots[0].find("img")["src"].split("?")[0].lstrip("/")
+
+    for invslot in invslots:
+        img: Tag = invslot.find("img")
+        if "Invicon " + search_name in img["alt"]:
+            return img["src"].split("?")[0].lstrip("/")
+
+    raise ValueError(f"Inventory image not found for {name}")

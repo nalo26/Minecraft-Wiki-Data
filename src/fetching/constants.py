@@ -28,3 +28,5 @@ EXCEPTIONS = {
     "Echo Shard": "echo_shard",  # ID table does not exists
     "Scute": "scute",  # TODO: change in 1.20.5
 }
+
+IGNORES = {"Ominous Banner", "Spawn NPC"}
