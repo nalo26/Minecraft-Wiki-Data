@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from src.database.models import Version
 
-from .regex import CLEAN_UPDATE_RE, DOUBLE_DATE_RE, DOUBLE_DAY_RE, INDEV_RE, INFDEV_RE, REMOVE_PARENTHESES_RE
+from .constants import CLEAN_UPDATE_RE, DOUBLE_DATE_RE, DOUBLE_DAY_RE, INDEV_RE, INFDEV_RE, REMOVE_PARENTHESES_RE
 
 
 def flatten_table(soup: BeautifulSoup, table: Tag) -> list[list[str]]:

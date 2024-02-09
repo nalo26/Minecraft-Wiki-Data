@@ -66,3 +66,7 @@ Behavior
 	
 Classification
 	name				string (Animal, Aquatic, Ambient, ...)
+
+
+Duplicates : 
+select a.identifier, a.name, a.inventory_image from item as a join item as b using(inventory_image) group by a.identifier having count(inventory_image) > 1 order by inventory_image;
