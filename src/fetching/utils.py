@@ -26,15 +26,17 @@ def get_identifier(soup: BeautifulSoup, name: str) -> str:
 
 
 def get_info_table(soup: BeautifulSoup) -> tuple[dict, Tag]:
-    raw_info_table = soup.find("table", {"class": "infobox-rows"})
+    raw_info_table: Tag = soup.find("table", {"class": "infobox-rows"})
     tool_list: Tag = None
     info_table = {}
     for row in raw_info_table.find_all("tr"):
-        key = row.find("th").text.strip().lower()
-        value = row.find("td")
+        key: str = row.find("th").text.strip().lower()
+        value: Tag = row.find("td")
         if key.startswith("tool"):
             tool_list = value.find("p")
             continue
+        for br in value.find_all("br"):
+            br.replace_with("\n")
         info_table[key] = value.text.strip().lower()
 
     return info_table, tool_list

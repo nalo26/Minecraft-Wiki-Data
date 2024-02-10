@@ -9,7 +9,7 @@ from .constants import EXTRACT_NUMBER_RE, IGNORES, REMOVE_PARENTHESES_RE
 from .utils import get_identifier, get_info_table, get_inventory_image
 
 
-def parse_item(BASE_URI: str, url: str, name: str):
+def parse_item(BASE_URI: str, url: str, name: str) -> Item:
     response = rq.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     identifier = get_identifier(soup, name)
@@ -28,7 +28,7 @@ def parse_item(BASE_URI: str, url: str, name: str):
         identifier=identifier,
         name=name,
         inventory_image=inventory_image,
-        # version_id=version_id,
+        # version=version,
         rarity=rarity,
         renewable=renewable,
         stack_size=stack_size,

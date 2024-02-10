@@ -1,5 +1,6 @@
 from .blocks import fetch_blocks
 from .items import fetch_items
+from .mobs import fetch_mobs
 from .versions import fetch_versions
 
 # BASE_URI = "https://minecraft.wiki/%s"
@@ -14,6 +15,7 @@ def fetch():
         fetch_versions(BASE_URI, db)
         fetch_items(BASE_URI, db)
         fetch_blocks(BASE_URI, db)
+        fetch_mobs(BASE_URI, db)
 
 
 if __name__ == "__main__":

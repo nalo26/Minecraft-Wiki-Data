@@ -41,6 +41,7 @@ def create_database(db: SQLAlchemy):
             Classification(name="Golem"),
             Classification(name="Illager"),
             Classification(name="Monster"),
+            Classification(name="NPC"),
             Classification(name="Undead"),
         ]
     )

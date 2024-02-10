@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from src.database.models import Block, Tool
 
-from .constants import ADDED_RE, EXTRACT_NUMBER_RE, IGNORES, IMAGE_BLOCK_LINK_RE, REMOVE_PARENTHESES_RE, TOOL_LINK_RE
+from .constants import ADDED_RE, EXTRACT_NUMBER_RE, FILE_LINK_RE, IGNORES, REMOVE_PARENTHESES_RE, TOOL_LINK_RE
 from .utils import get_identifier, get_info_table, get_inventory_image
 
 
@@ -54,12 +54,12 @@ def parse_block(BASE_URI: str, db: SQLAlchemy, url: str, name: str, render_image
         name=name,
         render_image=render_image,
         inventory_image=inventory_image,
-        # version_id=version_id,
+        # version=version,
         stack_size=stack_size,
         blast_resistance=blast_resistance,
         hardness=hardness,
         luminous=luminous,
-        # transparency_id=transparency_id,
+        # transparency=transparency,
         flammable=flammable,
         waterloggable=waterloggable,
     )
@@ -88,7 +88,7 @@ def fetch_blocks(BASE_URI: str, db: SQLAlchemy):
         if name in IGNORES:
             continue
         url = BASE_URI % name_tag["href"].lstrip("/")
-        render_image = BASE_URI % ("images/" + IMAGE_BLOCK_LINK_RE.sub(r"\1", image_tag["href"]))
+        render_image = BASE_URI % ("images/" + FILE_LINK_RE.sub(r"\1", image_tag["href"]))
         block = parse_block(BASE_URI, db, url, name, render_image)
         print(f"{block.name} / {block.identifier}")
 
