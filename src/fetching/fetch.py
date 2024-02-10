@@ -1,10 +1,8 @@
 from .blocks import fetch_blocks
+from .constants import BASE_URI
 from .items import fetch_items
 from .mobs import fetch_mobs
 from .versions import fetch_versions
-
-# BASE_URI = "https://minecraft.wiki/%s"
-BASE_URI = "http://127.0.0.1:5000/%s"
 
 
 def fetch():

@@ -4,7 +4,14 @@ from sqlalchemy.orm import relationship
 from .. import db
 
 
-class Block(db.Model):
+class ExportableModel(db.Model):
+    __abstract__ = True
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class Block(ExportableModel):
     __tablename__ = "block"
 
     identifier = db.Column(String(100), primary_key=True)
@@ -24,7 +31,7 @@ class Block(db.Model):
     waterloggable = db.Column(Boolean, nullable=True)  # None for full block
 
 
-class Item(db.Model):
+class Item(ExportableModel):
     __tablename__ = "item"
 
     identifier = db.Column(String(100), primary_key=True)
@@ -39,7 +46,7 @@ class Item(db.Model):
     dropped_by = db.relationship("Mob", secondary="drop", back_populates="drops")
 
 
-class Mob(db.Model):
+class Mob(ExportableModel):
     __tablename__ = "mob"
 
     identifier = db.Column(String(100), primary_key=True)
@@ -57,7 +64,7 @@ class Mob(db.Model):
     drops = db.relationship("Item", secondary="drop", back_populates="dropped_by")
 
 
-class Version(db.Model):
+class Version(ExportableModel):
     __tablename__ = "version"
 
     update = db.Column(String(100))

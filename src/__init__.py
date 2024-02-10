@@ -30,9 +30,17 @@ def create_app():
 
     app.register_blueprint(default_blueprint)
 
-    from .views.api import view as api_blueprint
+    from .views.api import block_view, item_view, mob_view
 
-    app.register_blueprint(api_blueprint)
+    app.register_blueprint(mob_view)
+    app.register_blueprint(block_view)
+    app.register_blueprint(item_view)
+
+    # Dynamic import of views
+    # for filename in os.listdir(Path.joinpath(Path(__file__).parent, "views")):
+    #     if filename.endswith(".py") and filename != "__init__.py":
+    #         module = __import__(f"src.views.{filename[:-3]}", fromlist=["view"])
+    #         app.register_blueprint(module.view)
 
     return app
 

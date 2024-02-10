@@ -1,5 +1,8 @@
 import re
 
+BASE_URI = "https://minecraft.wiki/%s"
+# BASE_URI = "http://127.0.0.1:5000/%s"
+
 CLEAN_UPDATE_RE = re.compile(r"\s*\(Guide\)")
 REMOVE_PARENTHESES_RE = re.compile(r"\s*\((.*)\)")
 REMOVE_NOTE_RE = re.compile(r"\s*\[(.*)\]")
