@@ -26,12 +26,10 @@ def create_app():
 
     db.init_app(app)
 
+    from .views.api import block_view, item_view, mob_view
     from .views.default import view as default_blueprint
 
     app.register_blueprint(default_blueprint)
-
-    from .views.api import block_view, item_view, mob_view
-
     app.register_blueprint(mob_view)
     app.register_blueprint(block_view)
     app.register_blueprint(item_view)
