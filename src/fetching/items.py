@@ -57,7 +57,7 @@ def fetch_items(BASE_URI: str, db: SQLAlchemy):
         url = BASE_URI % name_tag["href"].lstrip("/")
         if name == "Tropical Fish":
             url = BASE_URI % "w/Tropical_Fish_(item)"
-        item = parse_item(BASE_URI, db, url, name)
+        item = parse_item(BASE_URI, url, name)
         if item.identifier in dones:
             continue
         dones.add(item.identifier)
