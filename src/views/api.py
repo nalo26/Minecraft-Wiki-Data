@@ -21,7 +21,7 @@ def get_object(model: ExportableModel, identifier: str):
 
 
 def save_statistic(model: ExportableModel):
-    stat = Statistic(date=datetime.now(), ip=request.remote_addr, path=request.path, model=model.__name__)
+    stat = Statistic(date=datetime.now(), ip=request.access_route[-1], path=request.path, model=model.__name__)
     db.session.add(stat)
     db.session.commit()
 
