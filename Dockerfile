@@ -6,12 +6,14 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV FLASK_ENV production
+ENV WEB_HOST 0.0.0.0
+ENV WEB_PORT 8000
 
 COPY ./requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . /app
 
-EXPOSE 8000
+EXPOSE $WEB_PORT
 
 CMD ["python", "-m", "gunicorn", "run:app"]
