@@ -6,7 +6,7 @@ from flask import Blueprint, request
 from src.database.models import Block, ExportableModel, Item, Mob
 from src.utils import response
 
-TTL = getenv("CACHE_TTL", 60 * 60 * 24)
+TTL = int(getenv("CACHE_TTL", 60 * 60 * 24))
 
 block_view = Blueprint("block", __name__, url_prefix="/block")
 item_view = Blueprint("item", __name__, url_prefix="/item")

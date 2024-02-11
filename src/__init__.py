@@ -1,9 +1,13 @@
 import os
 
 from flask import Flask
+from flask_caching import Cache
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+cache = Cache(
+    config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": int(os.getenv("CLIENT_CACHE_TTL", 60 * 60 * 8))}
+)
 
 
 def create_app():
@@ -22,6 +26,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 
     db.init_app(app)
+    cache.init_app(app)
 
     from .views.api import block_view, item_view, mob_view
     from .views.default import view as default_blueprint

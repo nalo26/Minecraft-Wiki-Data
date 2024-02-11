@@ -6,3 +6,4 @@ beautifulsoup4==4.12.3
 requests==2.31.0 
 cachetools==5.3.2
 gunicorn==21.2.0
+flask_caching==2.1.0
