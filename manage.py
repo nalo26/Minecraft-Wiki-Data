@@ -1,8 +1,15 @@
+from os import getenv
+
 from flask.cli import FlaskGroup
 
 from src import create_app, db
 from src.database import create_database
 from src.fetching.fetch import fetch
+
+if getenv("FLASK_ENV") != "production":
+    from dotenv import load_dotenv
+
+    load_dotenv(".env")
 
 app = create_app()
 cli = FlaskGroup(app)
@@ -20,7 +27,4 @@ def run_fetch():
 
 
 if __name__ == "__main__":
-    from dotenv import load_dotenv
-
-    load_dotenv(".env")
     cli()
