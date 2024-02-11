@@ -11,4 +11,5 @@ def static_from_root():
 
 @view.route("/")
 def index():
-    return "Main page"  # TODO
+    # TODO
+    return redirect("https://github.com/nalo26/Minecraft-Wiki-Data/blob/main/README.md")
