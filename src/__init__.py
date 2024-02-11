@@ -1,6 +1,5 @@
 import os
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,8 +8,6 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-
-    load_dotenv(".env")
 
     db_url = "%s://%s:%s@%s:%s/%s" % (
         os.getenv("DB_ENGINE"),
@@ -41,11 +38,3 @@ def create_app():
     #         app.register_blueprint(module.view)
 
     return app
-
-
-def init_db():
-    from .database import create_database
-
-    app = create_app()
-    with app.app_context():
-        create_database(db)
