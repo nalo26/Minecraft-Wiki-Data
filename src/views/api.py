@@ -1,9 +1,11 @@
+from datetime import datetime
 from os import getenv
 
 from cachetools.func import ttl_cache
 from flask import Blueprint, request
 
-from src.database.models import Block, ExportableModel, Item, Mob
+from src import db
+from src.database.models import Block, ExportableModel, Item, Mob, Statistic
 from src.utils import response
 
 TTL = int(getenv("CACHE_TTL", 60 * 60 * 24))
@@ -18,10 +20,17 @@ def get_object(model: ExportableModel, identifier: str):
     return model.query.filter_by(identifier=identifier).first()
 
 
+def save_statistic(model: ExportableModel):
+    stat = Statistic(date=datetime.now(), ip=request.remote_addr, path=request.path, model=model.__name__)
+    db.session.add(stat)
+    db.session.commit()
+
+
 # -------------------------------------------------------------------
 
 
 def get_all(model: ExportableModel):
+    save_statistic(model)
     data = [obj.identifier for obj in model.query.all()]
     return response(data=data)
 
@@ -45,6 +54,7 @@ def all_mobs():
 
 
 def get_by_identifier(model: ExportableModel, identifier: str):
+    save_statistic(model)
     obj = get_object(model, identifier)
     if obj:
         return response(data=obj.as_dict())
@@ -70,6 +80,7 @@ def get_mob_by_identifier(mob_identifier):
 
 
 def search(model: ExportableModel):
+    save_statistic(model)
     request_args = request.args
     if any(arg not in model.__table__.columns for arg in request_args):
         return response(success=False, message="Invalid search parameters", code=400)
