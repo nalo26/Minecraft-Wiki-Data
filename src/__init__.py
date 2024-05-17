@@ -28,13 +28,11 @@ def create_app():
     db.init_app(app)
     cache.init_app(app)
 
-    from .views.api import block_view, item_view, mob_view
+    from .views.api import view as api_blueprint
     from .views.default import view as default_blueprint
 
     app.register_blueprint(default_blueprint)
-    app.register_blueprint(mob_view)
-    app.register_blueprint(block_view)
-    app.register_blueprint(item_view)
+    app.register_blueprint(api_blueprint)
 
     # Dynamic import of views
     # for filename in os.listdir(Path.joinpath(Path(__file__).parent, "views")):

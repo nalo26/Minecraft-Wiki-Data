@@ -1,104 +1,37 @@
-from datetime import datetime
-from os import getenv
+from flask import Blueprint
 
-from cachetools.func import ttl_cache
-from flask import Blueprint, request
+from src.database.models import Block, ExportableModel, Item, Mob
+from src.utils import get_all_from, get_by_identifier_from, response, search_from
 
-from src import db
-from src.database.models import Block, ExportableModel, Item, Mob, Statistic
-from src.utils import response
+ROUTES_DICT = {"block": Block, "item": Item, "mob": Mob}
 
-TTL = int(getenv("CACHE_TTL", 60 * 60 * 24))
-
-block_view = Blueprint("block", __name__, url_prefix="/block")
-item_view = Blueprint("item", __name__, url_prefix="/item")
-mob_view = Blueprint("mob", __name__, url_prefix="/mob")
+view = Blueprint("api", __name__)
 
 
-@ttl_cache(maxsize=1000, ttl=TTL)
-def get_object(model: ExportableModel, identifier: str):
-    return model.query.filter_by(identifier=identifier).first()
+def get_model(func):
+    def wrapper(model_name, *args, **kwargs):
+        model = ROUTES_DICT.get(model_name)
+        if not model:
+            return response(success=False, message="Invalid model", code=400)
+        return func(model, *args, **kwargs)
+
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 
-def save_statistic(model: ExportableModel):
-    stat = Statistic(date=datetime.now(), ip=request.access_route[-1], path=request.path, model=model.__name__)
-    db.session.add(stat)
-    db.session.commit()
-
-
-# -------------------------------------------------------------------
-
-
+@view.route("/<string:model_name>")
+@get_model
 def get_all(model: ExportableModel):
-    save_statistic(model)
-    data = [obj.identifier for obj in model.query.all()]
-    return response(data=data)
+    return get_all_from(model)
 
 
-@block_view.route("/")
-def all_blocks():
-    return get_all(Block)
+@view.route("/<string:model_name>/<string:identifier>")
+@get_model
+def get_identifier(model: ExportableModel, identifier: str):
+    return get_by_identifier_from(model, identifier)
 
 
-@item_view.route("/")
-def all_items():
-    return get_all(Item)
-
-
-@mob_view.route("/")
-def all_mobs():
-    return get_all(Mob)
-
-
-# -------------------------------------------------------------------
-
-
-def get_by_identifier(model: ExportableModel, identifier: str):
-    save_statistic(model)
-    obj = get_object(model, identifier)
-    if obj:
-        return response(data=obj.as_dict())
-    return response(success=False, message=f"{model.__name__} not found", code=404)
-
-
-@block_view.route("/<block_identifier>")
-def get_block_by_identifier(block_identifier):
-    return get_by_identifier(Block, block_identifier)
-
-
-@item_view.route("/<item_identifier>")
-def get_item_by_identifier(item_identifier):
-    return get_by_identifier(Item, item_identifier)
-
-
-@mob_view.route("/<mob_identifier>")
-def get_mob_by_identifier(mob_identifier):
-    return get_by_identifier(Mob, mob_identifier)
-
-
-# -------------------------------------------------------------------
-
-
-def search(model: ExportableModel):
-    save_statistic(model)
-    request_args = request.args
-    if any(arg not in model.__table__.columns for arg in request_args):
-        return response(success=False, message="Invalid search parameters", code=400)
-    objs = model.query.filter_by(**request_args).all()
-    data = {obj.identifier: obj.as_dict() for obj in objs}
-    return response(data=data)
-
-
-@block_view.route("/search")
-def search_blocks():
-    return search(Block)
-
-
-@item_view.route("/search")
-def search_items():
-    return search(Item)
-
-
-@mob_view.route("/search")
-def search_mobs():
-    return search(Mob)
+@view.route("/<string:model_name>/search")
+@get_model
+def search_blocks(model: ExportableModel):
+    return search_from(model)
