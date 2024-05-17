@@ -23,8 +23,12 @@ def get_object(model: ExportableModel, identifier: str):
     return model.query.filter_by(identifier=identifier).first()
 
 
+def get_request_ip():
+    return request.headers.get("Cf-Connecting-Ip", request.headers.get("X-Forwarded-For", request.access_route[-1]))
+
+
 def save_statistic(model: ExportableModel):
-    stat = Statistic(date=datetime.now(), ip=request.access_route[-1], path=request.path, model=model.__name__)
+    stat = Statistic(date=datetime.now(), ip=get_request_ip(), path=request.path, model=model.__name__)
     db.session.add(stat)
     db.session.commit()
 

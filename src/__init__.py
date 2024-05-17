@@ -6,7 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 cache = Cache(
-    config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": int(os.getenv("CLIENT_CACHE_TTL", 60 * 60 * 8))}
+    config={
+        "CACHE_TYPE": "NullCache" if os.getenv("FLASK_ENV") != "production" else "SimpleCache",
+        "CACHE_DEFAULT_TIMEOUT": int(os.getenv("CLIENT_CACHE_TTL", 60 * 60 * 8)),
+    }
 )
 
 
