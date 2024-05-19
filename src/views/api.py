@@ -4,7 +4,7 @@ from flask import Blueprint
 
 from src import cache
 from src.database.models import Block, ExportableModel, Item, Mob
-from src.utils import get_all_from, get_by_identifier_from, get_request_ip, response, search_from
+from src.utils import cache_query, get_all_from, get_by_identifier_from, get_request_ip, response, search_from
 
 ROUTES_DICT = {"block": Block, "item": Item, "mob": Mob}
 
@@ -24,7 +24,9 @@ def get_model(func):
 
 def user_cache_key(*args, **kwargs):
     hashed_ip = md5(get_request_ip().encode()).hexdigest()
-    return f"user_{hashed_ip}"
+    hashed_query = cache_query()
+    hash = hashed_ip + hashed_query
+    return hash
 
 
 @view.route("/<string:model_name>")

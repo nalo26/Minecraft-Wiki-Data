@@ -1,5 +1,6 @@
 import operator as op
 from datetime import datetime
+from hashlib import md5
 from os import getenv
 
 from cachetools.func import ttl_cache
@@ -85,3 +86,14 @@ def search_from(model: ExportableModel):
     objs = model.query.filter(*filtered_args).all()
     data = {obj.identifier: obj.as_dict() for obj in objs}
     return response(data=data)
+
+
+def cache_query():
+    """
+    This function is a copy of the original function from Flask-Caching
+    """
+    args_as_sorted_tuple = tuple(sorted(pair for pair in request.args.items(multi=True)))
+    args_as_bytes = str(args_as_sorted_tuple).encode()
+    cache_hash = str(md5(args_as_bytes).hexdigest())
+    cache_key = request.path + cache_hash
+    return cache_key
