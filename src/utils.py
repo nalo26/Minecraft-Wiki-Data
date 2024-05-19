@@ -1,3 +1,4 @@
+import operator as op
 from datetime import datetime
 from os import getenv
 
@@ -7,7 +8,19 @@ from flask import request
 from src import db
 from src.database.models import ExportableModel, Statistic
 
+# from sqlalchemy import and_
+
+
 TTL = int(getenv("SERVER_CACHE_TTL", 60 * 60 * 24))
+
+OPERATORS = [
+    "eq",
+    "ne",
+    "lt",
+    "le",
+    "gt",
+    "ge",
+]
 
 
 def response(success: bool = True, message: str = "", code: int = 200, **kwargs):
@@ -50,8 +63,25 @@ def get_by_identifier_from(model: ExportableModel, identifier: str):
 def search_from(model: ExportableModel):
     save_statistic(model)
     request_args = request.args
-    if any(arg not in model.__table__.columns for arg in request_args):
-        return response(success=False, message="Invalid search parameters", code=400)
-    objs = model.query.filter_by(**request_args).all()
+
+    filtered_args = []
+    for arg, value in request_args.items():
+        if "__" not in arg:
+            field = arg
+            operator = "eq"
+        else:
+            field, operator = arg.split("__")
+
+        if operator not in OPERATORS:
+            return response(success=False, message=f"Invalid operator filter '{operator}'", code=400)
+        operator = getattr(op, operator)
+        if field not in model.__table__.columns.keys():
+            return response(success=False, message=f"Invalid search parameter '{field}'", code=400)
+        field = getattr(model, field)
+        filtered_args.append(operator(field, value))
+
+    print(*filtered_args)
+
+    objs = model.query.filter(*filtered_args).all()
     data = {obj.identifier: obj.as_dict() for obj in objs}
     return response(data=data)
