@@ -75,32 +75,49 @@ https://mcdata.nalo.dev/<block/item/mob>/search?<parameters>
 - `<block/item/mob>` is either `block`, `item` or `mob`.  
 - `<parameters>` is the GET parameter(s) of the query. Can be any of the element's attributes.
 
+#### Parameter operators
+
+Following the Django convention, you can add operators to every parameter, in order to fetch more precisely than just the equality.  
+An operator should be set after a double underscore after a parameter (or element attribute), e.g. `hardness__gt=1.2`.  
+By default, when no operator is set, the equality will be applied (`hardness=5` is doing the same as `hardness__eq=5`).
+
+List of operators : 
+
+| **Parameter** | Description            | Symbol | Dev symbol |
+| ------------- | ---------------------- | ------ | ---------- |
+| **eq**        | Equals                 | =      | `==`       |
+| **ne**        | Not Equals (inequals)  | ≠      | `!=`       |
+| **lt**        | Lower Than             | <      | `<`        |
+| **le**        | Lower than or Equals   | ≤      | `<=`       |
+| **gt**        | Greater Than           | >      | `>`        |
+| **ge**        | Greater than or Equals | ≥      | `>=`       |
+
 Return a dictionnary of every matching elements, keyed by identifier, value of their datas.
 
 ```json
-> GET /mob/search?health=3&width=0.5
+> GET /mob/search?health__le=4&width__gt=0.5
 {
   "success": true,
   "data": {
-    "cod": {
-      "head_image": "https://minecraft.wiki/images/CodBody.png",
-      "health": 3,
-      "height": 0.3,
-      "identifier": "cod",
-      "name": "Cod",
-      "render_image": "https://minecraft.wiki/images/Cod.gif",
-      "version_id": null,
-      "width": 0.5
-    },
-    "tropical_fish": {
-      "head_image": "https://minecraft.wiki/images/TropicalFishBody.png",
+    "salmon": {
+      "head_image": "https://minecraft.wiki/images/SalmonBody.png",
       "health": 3,
       "height": 0.4,
-      "identifier": "tropical_fish",
-      "name": "Tropical Fish",
-      "render_image": "https://minecraft.wiki/images/Clownfish.png",
+      "identifier": "salmon",
+      "name": "Salmon",
+      "render_image": "https://minecraft.wiki/images/Salmon.gif",
       "version_id": null,
-      "width": 0.5
+      "width": 0.7
+    },
+    "snow_golem": {
+      "head_image": "https://minecraft.wiki/images/SnowGolemFace.png",
+      "health": 4,
+      "height": 1.9,
+      "identifier": "snow_golem",
+      "name": "Snow Golem",
+      "render_image": "https://minecraft.wiki/images/Snow_Golem.png",
+      "version_id": null,
+      "width": 0.7
     }
   }
 }
