@@ -28,21 +28,21 @@ def user_cache_key(*args, **kwargs):
 
 
 @view.route("/<string:model_name>")
-@cache.cached(make_cache_key=user_cache_key)
+@cache.cached(make_cache_key=user_cache_key, query_string=True)
 @get_model
 def get_all(model: ExportableModel):
     return get_all_from(model)
 
 
 @view.route("/<string:model_name>/<string:identifier>")
-@cache.cached(make_cache_key=user_cache_key)
+@cache.cached(make_cache_key=user_cache_key, query_string=True)
 @get_model
 def get_identifier(model: ExportableModel, identifier: str):
     return get_by_identifier_from(model, identifier)
 
 
 @view.route("/<string:model_name>/search")
-@cache.cached(make_cache_key=user_cache_key)
+@cache.cached(make_cache_key=user_cache_key, query_string=True)
 @get_model
 def search_blocks(model: ExportableModel):
     return search_from(model)
