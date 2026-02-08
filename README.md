@@ -125,7 +125,7 @@ Return a dictionnary of every matching elements, keyed by identifier, value of t
 
 ## Caching
 
-Any object is cached **24 hours on the serveur**.
+Any object is cached **24 hours on the server**.
 
 Any endpoint result is cached **8 hours per-client**.
 
